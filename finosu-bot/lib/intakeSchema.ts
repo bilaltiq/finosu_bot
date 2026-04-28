@@ -24,7 +24,7 @@ export const intakeSchema = z.object({
   employerName: z.string().min(1, "Employer name is required"),
   employerDepartment: z.string().optional(),
 
-  payFrequency: z.enum(["weekly", "biweekly", "semiweekly", "monthly"]),
+  payFrequency: z.enum(["weekly", "biweekly", "semimonthly", "monthly"]),
 
   payFrequencyDay: z.string().min(1, "Pay Frequency Day is required"),
   specificDay: z.string().min(1, "Specific Day is required"),
