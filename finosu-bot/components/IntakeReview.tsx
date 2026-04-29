@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import LiveKitVoiceRoom from "./LiveKitVoiceRoom";
 
 const sampleIntake = {
   name: "Gabriel Vincent",
@@ -89,6 +90,10 @@ export default function IntakeReview() {
             This page represents the structured form the voice bot will fill.
             For now, it uses editable sample data so we can test the email flow.
           </p>
+        </div>
+
+        <div className="mb-6">
+          <LiveKitVoiceRoom />
         </div>
 
         <section className="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl">
