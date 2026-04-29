@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import LiveKitVoiceRoom from "./LiveKitVoiceRoom";
 
 const sampleIntake = {
@@ -55,16 +56,16 @@ export default function IntakeReview() {
       if (!response.ok) {
         console.error(result);
         setStatus("error");
-        setMessage("Submission Failed. Check console");
+        setMessage("Submission failed. Check console.");
         return;
       }
 
       setStatus("success");
-      setMessage(result.message || "Summary email send successfully");
+      setMessage(result.message || "Summary email sent successfully.");
     } catch (error) {
       console.error(error);
       setStatus("error");
-      setMessage("Something went wrong. Please review and try again");
+      setMessage("Something went wrong. Please review and try again.");
     }
   }
 
@@ -79,27 +80,94 @@ export default function IntakeReview() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-950 text-white">
-      <div className="mx-auto max-w-4xl px-6 py-10">
-        <div className="mb-8">
-          <p className="text-sm uppercase tracking-wide text-slate-400">
-            Finosu Intake Bot
+    <main className="min-h-screen bg-[#fafafa] text-[#090b17]">
+      <div className="mx-auto max-w-7xl px-5 py-5 sm:px-8">
+        <header className="mx-auto flex max-w-3xl items-center justify-between rounded-full border border-black/5 bg-white/80 px-4 py-3 shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur">
+          <div className="flex items-center gap-3">
+            <Image
+              src="/finosu-logo.svg"
+              alt="Finosu logo"
+              width={116}
+              height={36}
+              priority
+              className="h-9 w-auto object-contain"
+            />
+          </div>
+
+          <nav className="hidden items-center gap-8 font-mono text-sm text-[#111322] sm:flex">
+            <span> Voice Assistant for Loan Information </span>
+          </nav>
+
+          <a className="rounded-full bg-[#080d22] px-5 py-3 text-sm font-bold text-white shadow-[0_14px_30px_rgba(8,13,34,0.22)]">
+            Demo
+          </a>
+        </header>
+
+        <section className="mx-auto mt-16 max-w-4xl text-center">
+          <div className="mx-auto mb-7 w-fit rounded-full border border-[#dfe5ff] bg-white px-5 py-2 font-mono text-xs uppercase tracking-[0.25em] text-[#8ea0ff]">
+            Live Voice
+          </div>
+
+          <h1 className="text-balance text-4xl font-black leading-[0.95] tracking-[tighter] text-[#101119] sm:text-4xl">
+            Personal + Loan Info Collected by an Agent
+          </h1>
+
+          <p className="mx-auto mt-8 max-w-3xl font-mono text-lg leading-8 text-[#383b48]">
+            A LiveKit agent gathers borrower information and validates it. Upon
+            validation, it sends a summary to your email.
           </p>
-          <h1 className="mt-2 text-3xl font-bold">Loan Intake Review</h1>
-          <p className="mt-3 text-slate-300">
-            This page represents the structured form the voice bot will fill.
-            For now, it uses editable sample data so we can test the email flow.
-          </p>
-        </div>
+        </section>
 
-        <div className="mb-6">
-          <LiveKitVoiceRoom />
-        </div>
+        <section className="mt-14 rounded-[2rem] border border-[#e1e3ea] bg-[#f1f2f6] p-5 shadow-[0_24px_80px_rgba(15,23,42,0.08)] sm:p-8">
+          <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
+            <div className="rounded-[1.5rem] bg-transparent p-4 sm:p-6">
+              <h2 className="mt-8 max-w-sm text-4xl font-bold leading-tight tracking-[-0.04em]">
+                Voice call to your Email
+              </h2>
 
-        <section className="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl">
-          <h2 className="mb-4 text-xl font-semibold">Applicant Information</h2>
+              <p className="mt-8 max-w-md font-mono text-lg leading-8 text-[#4d505b]">
+                The agent will ask you one question at a time. It will store
+                those answers, confirm the important fields and then submit the
+                final json payload through Resend.
+              </p>
 
-          <div className="grid gap-4 md:grid-cols-2">
+              <div className="mt-24 flex items-center gap-3">
+                <span className="h-2 w-2 rounded-full bg-[#a8acb7]" />
+                <span className="h-2 w-2 rounded-full bg-[#a8acb7]" />
+                <span className="h-2 w-2 rounded-full bg-[#a8acb7]" />
+              </div>
+            </div>
+
+            <div className="rounded-[1.5rem] border border-[#dfe1e7] bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
+              <div className="mb-5 flex items-start justify-between gap-3">
+                <div>
+                  <h3 className="text-3xl font-black tracking-[-0.04em] text-[#9b9ca4]">
+                    Voice Session
+                  </h3>
+                  <p className="mt-2 font-mono text-sm text-[#9ba8ff]">
+                    LiveKit Cloud Agent
+                  </p>
+                </div>
+              </div>
+
+              <LiveKitVoiceRoom />
+            </div>
+          </div>
+        </section>
+
+        <section className="mt-8 rounded-[2rem] border border-[#e1e3ea] bg-white p-5 shadow-[0_24px_80px_rgba(15,23,42,0.06)] sm:p-8">
+          <div className="mb-8 flex flex-col justify-between gap-4 border-b border-[#eceef4] pb-6 sm:flex-row sm:items-end">
+            <div>
+              <p className="font-mono text-xs uppercase tracking-[0.25em] text-[#9ba8ff]">
+                Output (For Testing Purposes)
+              </p>
+              <h2 className="mt-3 text-3xl font-black tracking-[-0.05em]">
+                Debugging Form
+              </h2>
+            </div>
+          </div>
+
+          <FormSection number="01" title="Applicant Information">
             <TextInput
               label="Name"
               value={formData.name}
@@ -125,13 +193,9 @@ export default function IntakeReview() {
               value={formData.lastSSN}
               onChange={(value) => updateField("lastSSN", value)}
             />
-          </div>
-        </section>
+          </FormSection>
 
-        <section className="mt-6 rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl">
-          <h2 className="mb-4 text-xl font-semibold">Bank Information</h2>
-
-          <div className="grid gap-4 md:grid-cols-2">
+          <FormSection number="02" title="Bank Information">
             <TextInput
               label="Routing Number"
               value={formData.bankRoutingNumber}
@@ -142,29 +206,18 @@ export default function IntakeReview() {
               value={formData.bankAccountNumber}
               onChange={(value) => updateField("bankAccountNumber", value)}
             />
+            <SelectInput
+              label="Checking / Savings"
+              value={formData.accountType}
+              options={[
+                { label: "Checking", value: "checking" },
+                { label: "Savings", value: "savings" },
+              ]}
+              onChange={(value) => updateField("accountType", value)}
+            />
+          </FormSection>
 
-            <label className="flex flex-col gap-2">
-              <span className="text-sm font-medium text-slate-300">
-                Checking / Savings
-              </span>
-              <select
-                className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white outline-none focus:border-blue-500"
-                value={formData.accountType}
-                onChange={(event) =>
-                  updateField("accountType", event.target.value)
-                }
-              >
-                <option value="checking">Checking</option>
-                <option value="savings">Savings</option>
-              </select>
-            </label>
-          </div>
-        </section>
-
-        <section className="mt-6 rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl">
-          <h2 className="mb-4 text-xl font-semibold">Address</h2>
-
-          <div className="grid gap-4 md:grid-cols-2">
+          <FormSection number="03" title="Address">
             <TextInput
               label="Street Address 1"
               value={formData.streetAddress1}
@@ -190,13 +243,9 @@ export default function IntakeReview() {
               value={formData.zip}
               onChange={(value) => updateField("zip", value)}
             />
-          </div>
-        </section>
+          </FormSection>
 
-        <section className="mt-6 rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl">
-          <h2 className="mb-4 text-xl font-semibold">Employment</h2>
-
-          <div className="grid gap-4 md:grid-cols-2">
+          <FormSection number="04" title="Employment">
             <TextInput
               label="Employment Status"
               value={formData.employmentStatus}
@@ -212,25 +261,17 @@ export default function IntakeReview() {
               value={formData.employerDepartment}
               onChange={(value) => updateField("employerDepartment", value)}
             />
-
-            <label className="flex flex-col gap-2">
-              <span className="text-sm font-medium text-slate-300">
-                Pay Frequency
-              </span>
-              <select
-                className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white outline-none focus:border-blue-500"
-                value={formData.payFrequency}
-                onChange={(event) =>
-                  updateField("payFrequency", event.target.value)
-                }
-              >
-                <option value="weekly">Weekly</option>
-                <option value="biweekly">Biweekly</option>
-                <option value="semimonthly">Semimonthly</option>
-                <option value="monthly">Monthly</option>
-              </select>
-            </label>
-
+            <SelectInput
+              label="Pay Frequency"
+              value={formData.payFrequency}
+              options={[
+                { label: "Weekly", value: "weekly" },
+                { label: "Biweekly", value: "biweekly" },
+                { label: "Semimonthly", value: "semimonthly" },
+                { label: "Monthly", value: "monthly" },
+              ]}
+              onChange={(value) => updateField("payFrequency", value)}
+            />
             <TextInput
               label="Pay Frequency Day"
               value={formData.payFrequencyDay}
@@ -251,9 +292,9 @@ export default function IntakeReview() {
               value={formData.employerPhoneNumber}
               onChange={(value) => updateField("employerPhoneNumber", value)}
             />
-          </div>
+          </FormSection>
 
-          <div className="mt-5 grid gap-3 md:grid-cols-3">
+          <div className="mt-6 grid gap-3 md:grid-cols-3">
             <CheckboxInput
               label="Salary over $2,000/month"
               checked={formData.salaryOver2000Monthly}
@@ -270,29 +311,63 @@ export default function IntakeReview() {
               onChange={(value) => updateField("deployedMilitary", value)}
             />
           </div>
+
+          <div className="mt-8 flex flex-col gap-4 rounded-[1.5rem] border border-[#e5e8f5] bg-[#f8f9ff] p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#9ba8ff]">
+                Final Step
+              </p>
+              <p className="mt-1 text-sm text-[#555967]">
+                Send the completed structured intake as a formatted email.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              {message && (
+                <p
+                  className={
+                    status === "success"
+                      ? "font-mono text-sm text-green-600"
+                      : "font-mono text-sm text-red-500"
+                  }
+                >
+                  {message}
+                </p>
+              )}
+
+              <button
+                onClick={submitIntake}
+                disabled={status === "sending"}
+                className="rounded-full bg-[#080d22] px-6 py-3 text-sm font-bold text-white shadow-[0_18px_35px_rgba(8,13,34,0.22)] transition hover:-translate-y-0.5 hover:bg-[#111936] disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {status === "sending" ? "Sending..." : "Send Summary Email"}
+              </button>
+            </div>
+          </div>
         </section>
-
-        <div className="mt-8 flex items-center gap-4">
-          <button
-            onClick={submitIntake}
-            disabled={status === "sending"}
-            className="rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {status === "sending" ? "Sending..." : "Send Summary Email"}
-          </button>
-
-          {message && (
-            <p
-              className={
-                status === "success" ? "text-green-400" : "text-red-400"
-              }
-            >
-              {message}
-            </p>
-          )}
-        </div>
       </div>
     </main>
+  );
+}
+
+function FormSection({
+  number,
+  title,
+  children,
+}: {
+  number: string;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="mt-6 rounded-[1.5rem] border border-[#e7e9f0] bg-[#fbfbfd] p-5">
+      <div className="mb-5 flex items-center gap-3">
+        <span className="font-mono text-sm text-[#a2a5af]">{number}</span>
+        <h3 className="text-xl font-black tracking-[-0.03em]">{title}</h3>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2">{children}</div>
+    </section>
   );
 }
 
@@ -307,12 +382,45 @@ function TextInput({
 }) {
   return (
     <label className="flex flex-col gap-2">
-      <span className="text-sm font-medium text-slate-300">{label}</span>
+      <span className="font-mono text-xs uppercase tracking-wide text-[#a0a3ad]">
+        {label}
+      </span>
       <input
-        className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white outline-none focus:border-blue-500"
+        className="cursor-text rounded-2xl border border-[#e0e3ed] bg-white px-4 py-3 font-mono text-sm text-[#8f93a0] outline-none transition placeholder:text-[#b7bac5] hover:border-[#cfd5f2] focus:border-[#aebcff] focus:text-[#111322] focus:ring-4 focus:ring-[#edf0ff]"
         value={value}
         onChange={(event) => onChange(event.target.value)}
       />
+    </label>
+  );
+}
+
+function SelectInput({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  options: { label: string; value: string }[];
+  onChange: (value: string) => void;
+}) {
+  return (
+    <label className="flex flex-col gap-2">
+      <span className="font-mono text-xs uppercase tracking-wide text-[#a0a3ad]">
+        {label}
+      </span>
+      <select
+        className="cursor-pointer rounded-2xl border border-[#e0e3ed] bg-white px-4 py-3 font-mono text-sm text-[#8f93a0] outline-none transition hover:border-[#cfd5f2] focus:border-[#aebcff] focus:text-[#111322] focus:ring-4 focus:ring-[#edf0ff]"
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+      >
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
     </label>
   );
 }
@@ -327,13 +435,14 @@ function CheckboxInput({
   onChange: (value: boolean) => void;
 }) {
   return (
-    <label className="flex items-center gap-3 rounded-lg border border-slate-700 bg-slate-950 px-3 py-3">
+    <label className="flex items-center gap-3 rounded-2xl border border-[#e0e3ed] bg-white px-4 py-4">
       <input
         type="checkbox"
         checked={checked}
         onChange={(event) => onChange(event.target.checked)}
+        className="h-4 w-4 accent-[#080d22]"
       />
-      <span className="text-sm text-slate-300">{label}</span>
+      <span className="font-mono text-sm text-[#343744]">{label}</span>
     </label>
   );
 }

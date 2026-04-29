@@ -26,7 +26,7 @@ export async function POST(request: Request) {
 
         return NextResponse.json({
             success: true,
-            message: "Summary email send successfully",
+            message: "Summary email sent successfully",
             summary
         })
     } catch (error) {
