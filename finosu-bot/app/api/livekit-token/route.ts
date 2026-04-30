@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { AccessToken } from "livekit-server-sdk";
+import { AccessToken, AgentDispatchClient } from "livekit-server-sdk";
 import { RoomAgentDispatch, RoomConfiguration } from "@livekit/protocol";
 
 const AGENT_NAME = "loan-intake-agent";
@@ -50,6 +50,23 @@ export async function POST(request: Request) {
         }),
       ],
     });
+
+    const dispatchClient = new AgentDispatchClient(
+      livekitUrl,
+      apiKey,
+      apiSecret
+    );
+
+    try {
+      await dispatchClient.createDispatch(roomName, AGENT_NAME, {
+        metadata: JSON.stringify({
+          source: "web-intake-demo",
+          participantName,
+        }),
+      });
+    } catch (error) {
+      console.warn("Agent dispatch may already exist or failed:", error);
+    }
 
     const jwt = await token.toJwt();
 
