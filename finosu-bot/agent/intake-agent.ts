@@ -236,23 +236,37 @@ function normalizeIntakeField(field: FieldName, rawValue: string): string | bool
 
         
         case "smsNumberIfDifferent": {
-            if (!value || value.toLowerCase() === "same" || value.toLowerCase() === "n/a") {
+
+            const normalized = value.trim().toLowerCase()
+
+            if (
+                !normalized ||
+                normalized === "same" ||
+                normalized === "n/a" ||
+                normalized === "no" ||
+                normalized === "none"
+            ) {
                 return "";
             }
 
-            return digitsOnly(value);
+            const digits = digitsOnly(value);
+
+            if (digits.length < 8 || digits.length > 15) {
+                throw new llm.ToolError("SMS phone number should be between 8 and 15 digits.")
+            }
+
+            return digits;
 
         }
 
         case "streetAddress2":
             return value || ""
-
+        
         default:
             return value
 
 
     }
-
 
 }
 
@@ -261,6 +275,7 @@ function getMissingFields(data: IntakeData): FieldName[] {
     "name",
     "email",
     "birthday",
+    "smsNumberIfDifferent",
     "lastSSN",
     "bankRoutingNumber",
     "bankAccountNumber",
@@ -381,7 +396,7 @@ class LoanIntakeAgent extends voice.Agent {
             
             You will behave like a professional voice assistant for the company Finosu. Your designation is a loan intake assistant.
             
-            You will have to collect the required loan intake fields one by one.
+            You will have to collect the required loan intake fields one by one. Do not let the user skip to another field unless they have answered the current one.
 
             Core behaviour:
             - Ask one question at a time, waiting for the user to respond.
@@ -407,6 +422,12 @@ class LoanIntakeAgent extends voice.Agent {
             - Convert spoken email formats like "at" and "dot" into @ and .
             - Repeat the email back clearly before saving
             - If unsure, ask them to spell it again.
+
+            SMS Handling:
+            - After collecting email, ask: "Would you like to provide a different phone number for SMS updates?"
+            - If no, save smsNumberIfDifferent as an empty string.
+            - If yes, ask for the SMS number, repeat it digit by digit, confirm it and then save smsNumberIfDifferent.
+            - In the final review, show an empty smsNumberIfDifferent as N/A.
 
             Name handling:
             - Ask for the full legal name.
@@ -541,18 +562,10 @@ export default defineAgent({
     session.on(voice.AgentSessionEventTypes.UserInputTranscribed, (event) => {
         if (!event.isFinal) return
 
-        const row = {
-            role: "user" as const,
-            text: event.transcript,
-            ts: new Date(event.createdAt).toISOString(),
-        }
-
-        transcript.push(row)
-
         console.log("USER_TRANSCRIPT", {
             room: ctx.room.name,
-            text: row.text,
-            ts: row.ts,
+            text: event.transcript,
+            ts: new Date(event.createdAt).toISOString(),
             language: event.language
         })
     })
