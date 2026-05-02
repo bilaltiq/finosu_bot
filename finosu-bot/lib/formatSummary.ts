@@ -26,7 +26,6 @@ export function formatIntakeSummary(data: IntakeForm) {
 
     Pay Frequency: ${data.payFrequency}
     Pay Frequency Day: ${data.payFrequencyDay}
-    Specific Day: ${data.specificDay}
 
     Salary Over $2,000/Month: ${data.salaryOver2000Monthly ? "Yes" : "No"}
     Employer Address: ${data.employerAddress}
