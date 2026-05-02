@@ -51,22 +51,22 @@ export async function POST(request: Request) {
       ],
     });
 
-    const dispatchClient = new AgentDispatchClient(
-      livekitUrl,
-      apiKey,
-      apiSecret
-    );
+    // const dispatchClient = new AgentDispatchClient(
+    //   livekitUrl,
+    //   apiKey,
+    //   apiSecret
+    // );
 
-    try {
-      await dispatchClient.createDispatch(roomName, AGENT_NAME, {
-        metadata: JSON.stringify({
-          source: "web-intake-demo",
-          participantName,
-        }),
-      });
-    } catch (error) {
-      console.warn("Agent dispatch may already exist or failed:", error);
-    }
+    // try {
+    //   await dispatchClient.createDispatch(roomName, AGENT_NAME, {
+    //     metadata: JSON.stringify({
+    //       source: "web-intake-demo",
+    //       participantName,
+    //     }),
+    //   });
+    // } catch (error) {
+    //   console.warn("Agent dispatch may already exist or failed:", error);
+    // }
 
     const jwt = await token.toJwt();
 

@@ -29,14 +29,16 @@ export default function LiveKitVoiceRoom() {
     setError("");
 
     try {
+      const sessionID = Date.now();
+
       const response = await fetch("/api/livekit-token", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          roomName: "finosu-demo-room",
-          participantName: `applicant-${Date.now()}`,
+          roomName: `finosu-demo-room-${sessionID}`,
+          participantName: `applicant-${sessionID}`,
         }),
       });
 
