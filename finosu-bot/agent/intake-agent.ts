@@ -6,7 +6,6 @@ import { fileURLToPath } from "url"
 import {
     cli,
     defineAgent,
-    inference,
     llm,
     ServerOptions,
     type JobContext,
@@ -35,7 +34,6 @@ type IntakeData = {
   employerDepartment?: string;
   payFrequency?: "weekly" | "biweekly" | "semimonthly" | "monthly";
   payFrequencyDay?: string;
-  specificDay?: string;
   salaryOver2000Monthly?: boolean;
   employerAddress?: string;
   employerPhoneNumber?: string;
@@ -62,7 +60,6 @@ const FIELD_NAMES = [
   "employerDepartment",
   "payFrequency",
   "payFrequencyDay",
-  "specificDay",
   "salaryOver2000Monthly",
   "employerAddress",
   "employerPhoneNumber",
@@ -78,8 +75,6 @@ const SENSITIVE_FIELDS = new Set<FieldName>([
     "bankAccountNumber",
     "employerPhoneNumber"
 ])
-
-const intake: IntakeData = {}
 
 function digitsOnly(value: string) {
     return value.replace(/\D/g, "")
@@ -117,6 +112,15 @@ function normalizeBirthday(value: string) {
     return parsed.toISOString().slice(0,10)
 }
 
+function normalizeSpokenEmail(value: string) {
+    return value
+        .toLowerCase()
+        .trim()
+        .replace(/\bat\b/g, "@")
+        .replace(/\bdot\b/g, ".")
+        .replace(/\s+/g, "");
+}
+
 function redactDigits(value?: string, visible = 4) {
     if (!value) return "N/A"
 
@@ -138,7 +142,7 @@ function normalizeIntakeField(field: FieldName, rawValue: string): string | bool
 
     switch(field){
         case "email": {
-            const normalized = value.toLowerCase().replace(/\s+/g, "");
+            const normalized = normalizeSpokenEmail(value)
 
             if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalized)) {
                 throw new llm.ToolError("That email address does not look valid.");
@@ -270,7 +274,6 @@ function getMissingFields(data: IntakeData): FieldName[] {
     "employerDepartment",
     "payFrequency",
     "payFrequencyDay",
-    "specificDay",
     "salaryOver2000Monthly",
     "employerAddress",
     "employerPhoneNumber",
@@ -309,7 +312,6 @@ function buildReviewSummary(data: IntakeData) {
     employerDepartment: data.employerDepartment ?? "N/A",
     payFrequency: data.payFrequency ?? "N/A",
     payFrequencyDay: data.payFrequencyDay ?? "N/A",
-    specificDay: data.specificDay ?? "N/A",
     salaryOver2000Monthly:
       data.salaryOver2000Monthly === undefined
         ? "N/A"
@@ -370,6 +372,9 @@ async function submitIntakeToBackend(data: IntakeData) {
 // ============================================= Agent class
 
 class LoanIntakeAgent extends voice.Agent {
+
+    private intake: IntakeData = {}
+
     constructor () {
         super ({
             instructions: `
@@ -378,17 +383,66 @@ class LoanIntakeAgent extends voice.Agent {
             
             You will have to collect the required loan intake fields one by one.
 
-            Rules:
-            - Ask one question at a time
-            - Save each answer using saveField tool
-            - For sensitive numeric fields, repeat the value back to the user digit by digit and ask the user to confirm
-            - The sensitive fields marked are the lastSSN, bank routing number, bank account number and employer phone number.
-            - Never ask for the full social security number
-            - Pay frequency must be weekly, biweekly, semimonthly or monthly.
-            - Pay frequency day is the payday pattern, i.e every Wednesday or the 1st and 15th.
-            - Once all fields collected, call reviewIntake and read a short redacted summary.
-            - Only once the user approves, call submitIntake
-            - Be calm, professional and concise
+            Core behaviour:
+            - Ask one question at a time, waiting for the user to respond.
+            - Keep questions short and clear.
+            - Do not rush the applicant.
+            - Do not guess, infer or fabricate field values.
+            - If the applicant gives an unclear answer, ask them to repeat or spell it.
+            - Save a field only after you are confident which field the answer belongs to.
+
+            Confirmation rules:
+            - For high-risk fields, repeat the captured value back and ask for confirmation BEFORE calling saveField.
+            - High risk fields are: name, email, lastSSN, bankRoutingNumber, bankAccountNumber, employerName, employerPhoneNumber, payFrequency.
+            - For lower-risk fields, you may save directly unless the answer is unclear.
+
+            Sensitive numeric fields:
+            - Sensitive numeric fields are lastSSN, bankRoutingNumber, bankAccountNumber and employerPhoneNumber.
+            - Never ask for the full social security number.
+            - For sensitive numeric fields, repeat the value back digit by digit before saving.
+            - Do not say full bank account or routing numbers in the final review. Only use redacted values from reviewIntake.
+
+            Email handling:
+            - Ask the applicant to spell their email slowly.
+            - Convert spoken email formats like "at" and "dot" into @ and .
+            - Repeat the email back clearly before saving
+            - If unsure, ask them to spell it again.
+
+            Name handling:
+            - Ask for the full legal name.
+            - Repeat the full legal name back. If the name is uncommon, unclear, short or corrected by the applicant, ask them to spell it and then confirm the spelling before saving.
+            - Do not change, shorten or autocorrect the name unless the applicant confirms.
+
+            Pay schedule handling:
+            - Pay frequency MUST be weekly, biweekly, semimonthly or monthly.
+            - After payFrequency is collected, ask only the payday detail that applies:
+                - weekly: ask what weekday they are paid
+                - biweekly: ask what weekday they are paid, and ask for the next payday if needed
+                - semimonthly: ask which two days of the month they are paid, for example the 1st and the 15th
+                - monthly: ask which day of the month they are paid, for example the 3rd or last business day
+            - Do not duplicate payday questions.
+
+            Tool usage:
+            - Use saveField to save one field at a time.
+            - For high-risk fields, call saveField only after the applicant confirms.
+            - After each saveField result, use nextSuggestedField to decide what to ask next.
+            - If saveField returns a validation error, politely ask the applicant for that field again.
+            - Once all fields are collected, call reviewIntake and read a short redacted summary.
+            - Only after the applicant clearly approves the review summary, call submitIntake.
+
+            Final Review:
+            - Keep the review precise and very short.
+            - Use redacted values for SSN, routing number, bank account number.
+            - Ask: "Is everything correct and shall I submit"
+            - If the applicant corrects any field during review, save the corrected value, call reviewIntake again and ask for approval again before submitting.
+
+            Tonality:
+            - Be calm, professional and concise.
+            - Avoid long explanations.
+            - If there is silence or confusion for a while briefly restate the question.
+
+            If the applicant answers a different question than the one asked, do not force the answer into the current field. Clarify what they meant before saving.
+            
             `,
             tools: {
                 saveField: llm.tool({
@@ -400,9 +454,9 @@ class LoanIntakeAgent extends voice.Agent {
                 execute: async({ field, value }) => {
                     const normalized = normalizeIntakeField(field, value);
 
-                    (intake as Record<string, unknown>)[field] = normalized;
+                    (this.intake as Record<string, unknown>)[field] = normalized;
 
-                    const missingFields = getMissingFields(intake)
+                    const missingFields = getMissingFields(this.intake)
 
                     return {
                         savedField: field,
@@ -421,8 +475,8 @@ class LoanIntakeAgent extends voice.Agent {
                     parameters: z.object({}),
                     execute: async () => {
                         return {
-                            missingFields: getMissingFields(intake),
-                            summary: buildReviewSummary(intake)
+                            missingFields: getMissingFields(this.intake),
+                            summary: buildReviewSummary(this.intake)
                         }
                     }
                 }),
@@ -431,14 +485,14 @@ class LoanIntakeAgent extends voice.Agent {
                     description: "Submit the completed intake after user approval of final review",
                     parameters: z.object({}),
                     execute: async () => {
-                        const missingFields = getMissingFields(intake)
+                        const missingFields = getMissingFields(this.intake)
                         if (missingFields.length > 0){
                             throw new llm.ToolError(
                                 `Cannot submit yet. The missing fields are: ${missingFields.join(", ")}`
                             )
                         }
 
-                        const result = await submitIntakeToBackend(intake)
+                        const result = await submitIntakeToBackend(this.intake)
 
                         return {
                             ok: true,
@@ -472,17 +526,43 @@ export default defineAgent({
 
     const session = new voice.AgentSession({
       vad,
-      stt: "deepgram/nova-3:multi",
+      stt: "deepgram/nova-3:en",
       llm: "openai/gpt-4.1-mini",
       tts: "cartesia/sonic-3:9626c31c-bec5-4cca-baa8-f8ba9e84c8bc"
     });
+
+    const transcript: Array<{
+        role: "user" | "agent";
+        text: string;
+        ts: string;
+
+    }> = [];
+
+    session.on(voice.AgentSessionEventTypes.UserInputTranscribed, (event) => {
+        if (!event.isFinal) return
+
+        const row = {
+            role: "user" as const,
+            text: event.transcript,
+            ts: new Date(event.createdAt).toISOString(),
+        }
+
+        transcript.push(row)
+
+        console.log("USER_TRANSCRIPT", {
+            room: ctx.room.name,
+            text: row.text,
+            ts: row.ts,
+            language: event.language
+        })
+    })
 
     await ctx.connect();
 
     await session.start({
       room: ctx.room,
       agent: new LoanIntakeAgent(),
-      record: false,
+      record: true,
     });    
   },
 });

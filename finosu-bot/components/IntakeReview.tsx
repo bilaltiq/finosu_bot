@@ -23,7 +23,6 @@ const sampleIntake = {
   employerDepartment: "Operations",
   payFrequency: "biweekly",
   payFrequencyDay: "Friday",
-  specificDay: "Every other Friday",
   salaryOver2000Monthly: true,
   employerAddress: "220 South Pleasant Street",
   employerPhoneNumber: "4135551234",
@@ -276,11 +275,6 @@ export default function IntakeReview() {
               label="Pay Frequency Day"
               value={formData.payFrequencyDay}
               onChange={(value) => updateField("payFrequencyDay", value)}
-            />
-            <TextInput
-              label="Specific Day"
-              value={formData.specificDay}
-              onChange={(value) => updateField("specificDay", value)}
             />
             <TextInput
               label="Employer Address"
