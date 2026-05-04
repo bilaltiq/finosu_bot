@@ -7,7 +7,7 @@ export function formatIntakeSummary(data: IntakeForm) {
     Name: ${data.name}
     Email: ${data.email}
     Birthday: ${data.birthday}
-    SMS Number if Different: ${data.smsNumber || "N/A"}
+    SMS Number if Different: ${data.smsNumberIfDifferent || "N/A"}
     Last Four SSN: ${data.lastSSN}
 
     Bank Account Routing Number: ${data.bankRoutingNumber}

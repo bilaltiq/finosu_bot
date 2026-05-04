@@ -4,7 +4,7 @@ export const intakeSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Valid email is required"),
   birthday: z.string().min(1, "Birthday is required"),
-  smsNumber: z.string().optional(),
+  smsNumberIfDifferent: z.string().optional(),
 
 
   lastSSN: z.string().regex(/^\d{4}$/, "Last four of SSN must be exactly 4 digits"),
