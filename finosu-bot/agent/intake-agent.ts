@@ -259,6 +259,22 @@ function normalizeIntakeField(field: FieldName, rawValue: string): string | bool
 
         }
 
+        case "employerDepartment": {
+            const normalized = value.trim().toLowerCase()
+
+            if (
+                !normalized ||
+                normalized === "none" ||
+                normalized === "n/a" ||
+                normalized === "no" ||
+                normalized === "not applicable"
+            ){
+                return "N/A";
+            }
+
+            return value
+        }
+
         case "streetAddress2":
             return value || ""
         
@@ -274,8 +290,8 @@ function getMissingFields(data: IntakeData): FieldName[] {
   const required: FieldName[] = [
     "name",
     "email",
-    "birthday",
     "smsNumberIfDifferent",
+    "birthday",
     "lastSSN",
     "bankRoutingNumber",
     "bankAccountNumber",
@@ -298,6 +314,10 @@ function getMissingFields(data: IntakeData): FieldName[] {
 
   return required.filter((field) => {
     const value = data[field];
+
+    if (field === "smsNumberIfDifferent") {
+        return value === undefined;
+    }
 
     if (typeof value === "boolean") {
       return false;
@@ -551,13 +571,6 @@ export default defineAgent({
       llm: "openai/gpt-4.1-mini",
       tts: "cartesia/sonic-3:9626c31c-bec5-4cca-baa8-f8ba9e84c8bc"
     });
-
-    const transcript: Array<{
-        role: "user" | "agent";
-        text: string;
-        ts: string;
-
-    }> = [];
 
     session.on(voice.AgentSessionEventTypes.UserInputTranscribed, (event) => {
         if (!event.isFinal) return
