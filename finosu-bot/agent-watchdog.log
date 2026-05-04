@@ -3904,3 +3904,63 @@ Using agent [CA_2BKEjYdrXG24]
 │ CA_2BKEjYdrXG24 │ Ta26yd3GJZqD │ us-east │ Running │ 13m / 2000m │ 0.58 / 4GB │ 1 / 1 / 1 │ 2026-05-04T13:36:49Z │
 └─────────────────┴──────────────┴─────────┴─────────┴─────────────┴────────────┴───────────┴──────────────────────┘
 [2026-05-04T16:33:41] Agent appears healthy. No action needed.
+[2026-05-04T16:35:41] Checking LiveKit agent status...
+[2026-05-04T16:35:41] Raw status output:
+[2026-05-04T16:35:41] Using project [finosu-bot]
+Using agent [CA_2BKEjYdrXG24]
+┌─────────────────┬──────────────┬─────────┬─────────┬─────────────┬────────────┬───────────┬──────────────────────┐
+│ ID              │ Version      │ Region  │ Status  │ CPU         │ Mem        │ Replicas  │ Deployed At          │
+├─────────────────┼──────────────┼─────────┼─────────┼─────────────┼────────────┼───────────┼──────────────────────┤
+│ CA_2BKEjYdrXG24 │ Ta26yd3GJZqD │ us-east │ Running │ 13m / 2000m │ 0.58 / 4GB │ 1 / 1 / 1 │ 2026-05-04T13:36:49Z │
+└─────────────────┴──────────────┴─────────┴─────────┴─────────────┴────────────┴───────────┴──────────────────────┘
+WARNING: config file C:\Users\mbila/.livekit/cli-config.yaml should have permissions 600
+WARNING: config file C:\Users\mbila/.livekit/cli-config.yaml should have permissions 600
+[2026-05-04T16:35:41] Cleaned status output:
+[2026-05-04T16:35:41] Using project [finosu-bot]
+Using agent [CA_2BKEjYdrXG24]
+┌─────────────────┬──────────────┬─────────┬─────────┬─────────────┬────────────┬───────────┬──────────────────────┐
+│ ID              │ Version      │ Region  │ Status  │ CPU         │ Mem        │ Replicas  │ Deployed At          │
+├─────────────────┼──────────────┼─────────┼─────────┼─────────────┼────────────┼───────────┼──────────────────────┤
+│ CA_2BKEjYdrXG24 │ Ta26yd3GJZqD │ us-east │ Running │ 13m / 2000m │ 0.58 / 4GB │ 1 / 1 / 1 │ 2026-05-04T13:36:49Z │
+└─────────────────┴──────────────┴─────────┴─────────┴─────────────┴────────────┴───────────┴──────────────────────┘
+[2026-05-04T16:35:41] Agent appears healthy. No action needed.
+[2026-05-04T16:37:41] Checking LiveKit agent status...
+[2026-05-04T16:37:41] Raw status output:
+[2026-05-04T16:37:41] Using project [finosu-bot]
+Using agent [CA_2BKEjYdrXG24]
+┌─────────────────┬──────────────┬─────────┬─────────┬─────────────┬────────────┬───────────┬──────────────────────┐
+│ ID              │ Version      │ Region  │ Status  │ CPU         │ Mem        │ Replicas  │ Deployed At          │
+├─────────────────┼──────────────┼─────────┼─────────┼─────────────┼────────────┼───────────┼──────────────────────┤
+│ CA_2BKEjYdrXG24 │ Ta26yd3GJZqD │ us-east │ Running │ 13m / 2000m │ 0.58 / 4GB │ 1 / 1 / 1 │ 2026-05-04T13:36:49Z │
+└─────────────────┴──────────────┴─────────┴─────────┴─────────────┴────────────┴───────────┴──────────────────────┘
+WARNING: config file C:\Users\mbila/.livekit/cli-config.yaml should have permissions 600
+WARNING: config file C:\Users\mbila/.livekit/cli-config.yaml should have permissions 600
+[2026-05-04T16:37:41] Cleaned status output:
+[2026-05-04T16:37:41] Using project [finosu-bot]
+Using agent [CA_2BKEjYdrXG24]
+┌─────────────────┬──────────────┬─────────┬─────────┬─────────────┬────────────┬───────────┬──────────────────────┐
+│ ID              │ Version      │ Region  │ Status  │ CPU         │ Mem        │ Replicas  │ Deployed At          │
+├─────────────────┼──────────────┼─────────┼─────────┼─────────────┼────────────┼───────────┼──────────────────────┤
+│ CA_2BKEjYdrXG24 │ Ta26yd3GJZqD │ us-east │ Running │ 13m / 2000m │ 0.58 / 4GB │ 1 / 1 / 1 │ 2026-05-04T13:36:49Z │
+└─────────────────┴──────────────┴─────────┴─────────┴─────────────┴────────────┴───────────┴──────────────────────┘
+[2026-05-04T16:37:41] Agent appears healthy. No action needed.
+[2026-05-04T16:39:40] Checking LiveKit agent status...
+[2026-05-04T16:39:41] Raw status output:
+[2026-05-04T16:39:41] Using project [finosu-bot]
+Using agent [CA_2BKEjYdrXG24]
+┌─────────────────┬──────────────┬─────────┬─────────┬─────────────┬────────────┬───────────┬──────────────────────┐
+│ ID              │ Version      │ Region  │ Status  │ CPU         │ Mem        │ Replicas  │ Deployed At          │
+├─────────────────┼──────────────┼─────────┼─────────┼─────────────┼────────────┼───────────┼──────────────────────┤
+│ CA_2BKEjYdrXG24 │ Ta26yd3GJZqD │ us-east │ Running │ 13m / 2000m │ 0.58 / 4GB │ 1 / 1 / 1 │ 2026-05-04T13:36:49Z │
+└─────────────────┴──────────────┴─────────┴─────────┴─────────────┴────────────┴───────────┴──────────────────────┘
+WARNING: config file C:\Users\mbila/.livekit/cli-config.yaml should have permissions 600
+WARNING: config file C:\Users\mbila/.livekit/cli-config.yaml should have permissions 600
+[2026-05-04T16:39:41] Cleaned status output:
+[2026-05-04T16:39:41] Using project [finosu-bot]
+Using agent [CA_2BKEjYdrXG24]
+┌─────────────────┬──────────────┬─────────┬─────────┬─────────────┬────────────┬───────────┬──────────────────────┐
+│ ID              │ Version      │ Region  │ Status  │ CPU         │ Mem        │ Replicas  │ Deployed At          │
+├─────────────────┼──────────────┼─────────┼─────────┼─────────────┼────────────┼───────────┼──────────────────────┤
+│ CA_2BKEjYdrXG24 │ Ta26yd3GJZqD │ us-east │ Running │ 13m / 2000m │ 0.58 / 4GB │ 1 / 1 / 1 │ 2026-05-04T13:36:49Z │
+└─────────────────┴──────────────┴─────────┴─────────┴─────────────┴────────────┴───────────┴──────────────────────┘
+[2026-05-04T16:39:41] Agent appears healthy. No action needed.

@@ -97,12 +97,7 @@ export async function POST(request: Request) {
         const intakeId = result.rows[0].id
         const createdAt = result.rows[0].created_at
 
-    const summary = `
-    Intake ID: ${intakeId}
-    Submitted At: ${createdAt}
-
-    ${formatIntakeSummary(data)}
-        `.trim()
+        const summary = formatIntakeSummary(data)
 
         await sendSummaryEmail(summary)
 
