@@ -551,6 +551,7 @@ class LoanIntakeAgent extends voice.Agent {
 
     async onEnter() {
         this.session.generateReply({
+            allowInterruptions: true,
             instructions:
             "Briefly greet the applicant, then mention you are going to collect information for their loan applications and ask for their full legal name first."
         })
@@ -569,7 +570,31 @@ export default defineAgent({
       vad,
       stt: "deepgram/nova-3:en",
       llm: "openai/gpt-4.1-mini",
-      tts: "cartesia/sonic-3:9626c31c-bec5-4cca-baa8-f8ba9e84c8bc"
+      tts: "cartesia/sonic-3:9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
+
+      turnHandling: {
+        turnDetection: "vad",
+
+        endpointing: {
+            mode: "fixed",
+            minDelay: 400,
+            maxDelay: 2000,
+        },
+
+        interruption: {
+            enabled: true,
+            mode: "adaptive",
+            minDuration: 250,
+            minWords: 0,
+            discardAudioIfUninterruptible: true,
+            falseInterruptionTimeout: 1500,
+            resumeFalseInterruption: true,   
+        },
+
+        preemptiveGeneration: {
+            preemptiveTts: true,
+        }
+      }
     });
 
     session.on(voice.AgentSessionEventTypes.UserInputTranscribed, (event) => {
